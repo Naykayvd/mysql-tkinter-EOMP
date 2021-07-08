@@ -13,6 +13,7 @@ welcome_label = Label(window, text="Please sign in or register")
 welcome_label.place(x=70, y=10)
 
 date = datetime.datetime.now()
+window.bind("<Control-a>", lambda z: admin_access())
 
 
 def admin_access():
@@ -87,22 +88,22 @@ def log():
             if user_name_entry.get() == i[0] and user_id_entry.get() == i[2]:
                 verified = True
                 print(i)
-                # sign out page
+        if not verified:
+            messagebox.showerror("Try again", "There maybe a typo or you are not a user")
+            user_name_entry.delete(0, END)
+            user_id_entry.delete(0, END)
+        elif verified:
+            messagebox.showinfo("Welcome!!", "Welcome " + str(user_name_entry.get()) + "\n" +
+                                "You have signed in at " + str(date))
+            # sign out page
             root.destroy()
             sign_out_page = Tk()
             sign_out_page.title("Sign out section")
             sign_out_page.geometry("300x300")
             label1 = Label(sign_out_page, text="We hope your enjoyed your day/visit")
             label1.place(x=30, y=20)
-            button1 = Button(sign_out_page, text="Sign-Out")
+            button1 = Button(sign_out_page, text="Sign-Out", bg="blue")
             button1.place(x=120, y=250)
-        if not verified:
-            messagebox.showerror("Try again", "There maybe a typo or you are not a user")
-            user_name_entry.delete(0, END)
-            user_id_entry.delete(0, END)
-        elif verified:
-            messagebox.showinfo("Welcome!!", "You have signed in " + str(user_name_entry.get()) + "\n" +
-                                "at " + str(date))
 
     def erase():
         user_name_entry.delete(0, END)
@@ -111,9 +112,9 @@ def log():
     # buttons
     sign_in_button = Button(root, text="Login", command=sign, bg="blue")
     sign_in_button.place(x=30, y=140)
-    clear_button = Button(root, text="clear", command=erase, bg="blue")
+    clear_button = Button(root, text="clear", command=erase, bg="magenta")
     clear_button.place(x=180, y=140)
-    exit_button = Button(root, text="Exit", command=exit, bg="blue")
+    exit_button = Button(root, text="Exit", command=exit, bg="orange")
     exit_button.place(x=320, y=140)
 
 
@@ -149,12 +150,15 @@ def reg_new_user():
     nextofkin_phonenumber_entry.place(x=300, y=230)
 
     def registering():
+        mydb = mysql.connector.connect(user='lifechoices', password='@lifechoices1234', host='127.0.0.1',
+                                       database='lifechoices_online', auth_plugin='mysql_native_password')
+        sql = "SELECT * FROM user"
+        mycursor = mydb.cursor()
         # insert new user to user table
         val = (new_user_name_entry.get(), new_user_surname_entry.get(), new_user_id_entry.get(),
                new_user_phonenumber_entry.get())
         SQL = "INSERT INTO user(name, surname, idnumber, phonenumber) \n VALUES(%s, %s, %s, %s)"
         xy = mycursor.execute(SQL, val)
-
         # insert into nextofkin table
         val = (nextofkin_name_entry.get(), nextofkin_phonenumber_entry.get())
         SQL = "INSERT INTO nextofkin(nextofkin_name, nextofkin_phonenumber)"
@@ -168,10 +172,10 @@ def reg_new_user():
 
     submit_button = Button(new_user, text="Submit details", command=registering, bg="blue")
     submit_button.place(x=25, y=350)
-    clear2_button = Button(new_user, text="Clear", command=erase2, bg="blue")
-    clear2_button.place(x=200, y=350)
-    exit2_button = Button(new_user, text="Exit", command=exit, bg="blue")
-    exit2_button.place(x=325, y=350)
+    clear2_button = Button(new_user, text="Clear", command=erase2, bg="magenta")
+    clear2_button.place(x=260, y=350)
+    exit2_button = Button(new_user, text="Exit", command=exit, bg="orange")
+    exit2_button.place(x=420, y=350)
 
 
 # creating buttons
@@ -179,7 +183,5 @@ log_btn = Button(window, text="Sign in", command=log, bg="blue")
 log_btn.place(x=120, y=95)
 register = Button(window, text="Register new user", command=reg_new_user, bg="blue")
 register.place(x=85, y=145)
-admin = Button(window, text="Admin", command=admin_access, bg="red")
-admin.place(x=120, y=45)
 
 window.mainloop()
