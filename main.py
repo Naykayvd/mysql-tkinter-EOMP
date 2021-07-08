@@ -3,6 +3,7 @@ import datetime
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 
 # creating window
 window = tk.Tk()
@@ -18,7 +19,43 @@ def admin_access():
     window.destroy()
     admin_tab = Tk()
     admin_tab.title("Admin Window")
-    admin_tab.geometry("400x400")
+    admin_tab.geometry("600x400")
+    # Tree view columns
+    connect = mysql.connector.connect(user="lifechoices", password="@lifechoices1234", host="127.0.0.1",
+                                      database="lifechoices_online", auth_plugin="mysql_native_password")
+    conn = connect.cursor()
+    conn.execute("SELECT * FROM users")
+    conn.execute("SELECT * FROM nextofkin")
+    tree1 = ttk.Treeview(admin_tab)
+    tree2 = ttk.Treeview(admin_tab)
+    tree1["columns"] = ("name", "surname", "idnumber", "phonenumber", "time_in", "time_out")
+    tree1.column("name", anchor=tk.CENTER)
+    tree1.column("surname", anchor=tk.CENTER)
+    tree1.column("idnumber", anchor=tk.CENTER)
+    tree1.column("phonenumber", anchor=tk.CENTER)
+    tree1.column("time_in", anchor=tk.CENTER)
+    tree1.column("time_out", anchor=tk.CENTER)
+    tree2.column("nextofkin_name", anchor=tk.CENTER)
+    tree2.column("nextofkin_phonenumber", anchor=tk.CENTER)
+    tree2.column("name", anchor=tk.CENTER)
+    # Tree view headings
+    tree1.heading("name", text="Name", anchor=tk.CENTER)
+    tree1.heading("surname", text="Surname", anchor=tk.CENTER)
+    tree1.heading("idnumber", text="ID Number", anchor=tk.CENTER)
+    tree1.heading("phonenumber", text="Phone number", anchor=tk.CENTER)
+    tree1.heading("time_in", text="Time-In", anchor=tk.CENTER)
+    tree1.heading("time_out", text="Time-Out", anchor=tk.CENTER)
+    tree2.heading("nextofkin_name", text="Next of kin name", anchor=tk.CENTER)
+    tree2.heading("nextofkin_phonenumber", text="Next of kin phone number", anchor=tk.CENTER)
+    tree2.heading("name", text="Name", anchor=tk.CENTER)
+
+    i = 0
+    for row in conn:
+        tree1.insert("", i, text="", values=(row[0], row[1], row[2], row[3], row[4], row[5]))
+        # tree2.insert("", i, text="", values=(row[0], row[1], row[2]))
+        i = i + 1
+    tree1.pack()
+    tree2.pack()
 
 
 # Creating the sign in screen for existing users
