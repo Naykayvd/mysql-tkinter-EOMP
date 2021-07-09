@@ -20,43 +20,40 @@ def admin_access():
     window.destroy()
     admin_tab = Tk()
     admin_tab.title("Admin Window")
-    admin_tab.geometry("600x400")
+    admin_tab.geometry("775x600")
     # Tree view columns
     connect = mysql.connector.connect(user="lifechoices", password="@lifechoices1234", host="127.0.0.1",
                                       database="lifechoices_online", auth_plugin="mysql_native_password")
     conn = connect.cursor()
-    conn.execute("SELECT * FROM users")
-    conn.execute("SELECT * FROM nextofkin")
-    tree1 = ttk.Treeview(admin_tab)
-    tree2 = ttk.Treeview(admin_tab)
-    tree1["columns"] = ("name", "surname", "idnumber", "phonenumber", "time_in", "time_out")
-    tree1.column("name", anchor=tk.CENTER)
-    tree1.column("surname", anchor=tk.CENTER)
-    tree1.column("idnumber", anchor=tk.CENTER)
-    tree1.column("phonenumber", anchor=tk.CENTER)
-    tree1.column("time_in", anchor=tk.CENTER)
-    tree1.column("time_out", anchor=tk.CENTER)
-    tree2.column("nextofkin_name", anchor=tk.CENTER)
-    tree2.column("nextofkin_phonenumber", anchor=tk.CENTER)
-    tree2.column("name", anchor=tk.CENTER)
-    # Tree view headings
-    tree1.heading("name", text="Name", anchor=tk.CENTER)
-    tree1.heading("surname", text="Surname", anchor=tk.CENTER)
-    tree1.heading("idnumber", text="ID Number", anchor=tk.CENTER)
-    tree1.heading("phonenumber", text="Phone number", anchor=tk.CENTER)
-    tree1.heading("time_in", text="Time-In", anchor=tk.CENTER)
-    tree1.heading("time_out", text="Time-Out", anchor=tk.CENTER)
-    tree2.heading("nextofkin_name", text="Next of kin name", anchor=tk.CENTER)
-    tree2.heading("nextofkin_phonenumber", text="Next of kin phone number", anchor=tk.CENTER)
-    tree2.heading("name", text="Name", anchor=tk.CENTER)
+    conn.execute("SELECT * FROM user")
+    tree = ttk.Treeview(admin_tab)
+    tree["columns"] = ("name", "surname", "idnumber", "phonenumber", "time_in", "time_out")
+    tree.column("name", width=95, minwidth=95, anchor=tk.CENTER)
+    tree.column("surname", width=95, minwidth=95, anchor=tk.CENTER)
+    tree.column("idnumber", width=95, minwidth=95, anchor=tk.CENTER)
+    tree.column("phonenumber", width=95, minwidth=95, anchor=tk.CENTER)
+    tree.column("time_in", width=95, minwidth=95, anchor=tk.CENTER)
+    tree.column("time_out", width=95, minwidth=95, anchor=tk.CENTER)
+
+    tree.heading("name", text="Name", anchor=tk.CENTER)
+    tree.heading("surname", text="Surname", anchor=tk.CENTER)
+    tree.heading("idnumber", text="ID Number", anchor=tk.CENTER)
+    tree.heading("phonenumber", text="Phone Number", anchor=tk.CENTER)
+    tree.heading("time_in", text="Time in", anchor=tk.CENTER)
+    tree.heading("time_out", text="Time out", anchor=tk.CENTER)
 
     i = 0
     for row in conn:
-        tree1.insert("", i, text="", values=(row[0], row[1], row[2], row[3], row[4], row[5]))
-        # tree2.insert("", i, text="", values=(row[0], row[1], row[2]))
+        tree.insert('', i, text="USER", values=(row[0], row[1], row[2], row[3], row[4], row[5]))
         i = i + 1
-    tree1.pack()
-    tree2.pack()
+    tree.place(x=1, y=10)
+
+    delete_text = Label(admin_tab, text="Select from where to delete")
+    delete_text.place(x=340, y=565)
+    entry_delete = Entry(admin_tab)
+    entry_delete.place(x=530, y=565)
+    remove_button = Button(admin_tab, text="Delete", bg="red")
+    remove_button.place(x=700, y=562)
 
 
 # Creating the sign in screen for existing users
@@ -160,15 +157,19 @@ def reg_new_user():
         SQL = "INSERT INTO user(name, surname, idnumber, phonenumber) \n VALUES(%s, %s, %s, %s)"
         xy = mycursor.execute(SQL, val)
         # insert into nextofkin table
-        val = (nextofkin_name_entry.get(), nextofkin_phonenumber_entry.get())
-        SQL = "INSERT INTO nextofkin(nextofkin_name, nextofkin_phonenumber)"
+        val = (nextofkin_name_entry.get(), nextofkin_phonenumber_entry.get(), new_user_name_entry.get())
+        SQL = "INSERT INTO nextofkin(nextofkin_name, nextofkin_phonenumber, name) \n VALUES(%s, %s, %s)"
         xy = mycursor.execute(SQL, val)
+        mydb.commit()
+        messagebox.showinfo("REGISTERED", "Your details have been saved")
 
     def erase2():
         new_user_name_entry.delete(0, END)
         new_user_surname_entry.delete(0, END)
         new_user_id_entry.delete(0, END)
         new_user_phonenumber_entry.delete(0, END)
+        nextofkin_name_entry.delete(0, END)
+        nextofkin_phonenumber_entry.delete(0, END)
 
     submit_button = Button(new_user, text="Submit details", command=registering, bg="blue")
     submit_button.place(x=25, y=350)
