@@ -20,7 +20,7 @@ def admin_access():
     window.destroy()
     admin_tab = Tk()
     admin_tab.title("Admin Window")
-    admin_tab.geometry("775x600")
+    admin_tab.geometry("900x820")
     # Tree view columns
     connect = mysql.connector.connect(user="lifechoices", password="@lifechoices1234", host="127.0.0.1",
                                       database="lifechoices_online", auth_plugin="mysql_native_password")
@@ -28,12 +28,12 @@ def admin_access():
     conn.execute("SELECT * FROM user")
     tree = ttk.Treeview(admin_tab)
     tree["columns"] = ("name", "surname", "idnumber", "phonenumber", "time_in", "time_out")
-    tree.column("name", width=95, minwidth=95, anchor=tk.CENTER)
-    tree.column("surname", width=95, minwidth=95, anchor=tk.CENTER)
-    tree.column("idnumber", width=95, minwidth=95, anchor=tk.CENTER)
-    tree.column("phonenumber", width=95, minwidth=95, anchor=tk.CENTER)
-    tree.column("time_in", width=95, minwidth=95, anchor=tk.CENTER)
-    tree.column("time_out", width=95, minwidth=95, anchor=tk.CENTER)
+    tree.column("name", width=115, minwidth=115, anchor=tk.CENTER)
+    tree.column("surname", width=115, minwidth=115, anchor=tk.CENTER)
+    tree.column("idnumber", width=115, minwidth=115, anchor=tk.CENTER)
+    tree.column("phonenumber", width=115, minwidth=115, anchor=tk.CENTER)
+    tree.column("time_in", width=115, minwidth=115, anchor=tk.CENTER)
+    tree.column("time_out", width=115, minwidth=115, anchor=tk.CENTER)
 
     tree.heading("name", text="Name", anchor=tk.CENTER)
     tree.heading("surname", text="Surname", anchor=tk.CENTER)
@@ -46,14 +46,34 @@ def admin_access():
     for row in conn:
         tree.insert('', i, text="USER", values=(row[0], row[1], row[2], row[3], row[4], row[5]))
         i = i + 1
-    tree.place(x=1, y=10)
+    tree.place(x=5, y=10)
 
+    connect = mysql.connector.connect(user="lifechoices", password="@lifechoices1234", host="127.0.0.1",
+                                      database="lifechoices_online", auth_plugin="mysql_native_password")
+    conn = connect.cursor()
+    conn.execute("SELECT * FROM nextofkin")
+    nextofkin_tree = Listbox(admin_tab, height=10, width=110)
+    nextofkin_tree.place(x=8, y=240)
+    for i in conn:
+        nextofkin_tree.insert('end', str(i))
+
+    def delete_user():
+        user_nm = entry_delete.get()
+        mydb = mysql.connector.connect(user='lifechoices', password='@lifechoices1234', host='127.0.0.1',
+                                       database='lifechoices_online', auth_plugin='mysql_native_password')
+        mycursor = mydb.cursor()
+        sql = "Delete from user Where idnumber = %s"
+        mycursor.execute(sql, [(user_nm)])
+        mydb.commit()
+        messagebox.showinfo("USER DELETED", "User deleted")
+
+    # buttons
     delete_text = Label(admin_tab, text="Select from where to delete")
-    delete_text.place(x=340, y=565)
+    delete_text.place(x=460, y=665)
     entry_delete = Entry(admin_tab)
-    entry_delete.place(x=530, y=565)
-    remove_button = Button(admin_tab, text="Delete", bg="red")
-    remove_button.place(x=700, y=562)
+    entry_delete.place(x=650, y=665)
+    remove_button = Button(admin_tab, text="Delete", command=delete_user,bg="red")
+    remove_button.place(x=820, y=662)
 
 
 # Creating the sign in screen for existing users
