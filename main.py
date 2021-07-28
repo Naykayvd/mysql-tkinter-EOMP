@@ -13,6 +13,7 @@ welcome_label = Label(window, text="Please sign in or register")
 welcome_label.place(x=70, y=10)
 
 date = datetime.datetime.now()
+# press ctrl + a in login screen
 window.bind("<Control-a>", lambda z: admin_access())
 
 
