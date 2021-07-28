@@ -73,7 +73,7 @@ def admin_access():
     delete_text.place(x=460, y=665)
     entry_delete = Entry(admin_tab)
     entry_delete.place(x=650, y=665)
-    remove_button = Button(admin_tab, text="Delete", command=delete_user,bg="red")
+    remove_button = Button(admin_tab, text="Delete", command=delete_user, bg="red")
     remove_button.place(x=820, y=662)
 
 
